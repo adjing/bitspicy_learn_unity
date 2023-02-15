@@ -1,10 +1,6 @@
 ﻿/*
 角色AI系统，英雄和角色共用。英雄自动打，怪物行为
-
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Role_AISystem : MonoBehaviour
@@ -20,26 +16,30 @@ public class Role_AISystem : MonoBehaviour
     [Header("攻击目标")]
     public Transform attack_target;
 
-    private Animator animator;
+    [Header("当前的攻击目标")]
+    public float current_attack_distance = 0.0f;
 
-    //[SerializeField]
-    //public AnimationClip standAnimationClip;
-    //[SerializeField]
-    //public GameObject playerObject;
-    //[SerializeField]
-    //public AnimationClip runAnimationClip;
-    //[SerializeField]
-    //public AnimationClip attackAnimationClip;
+    [Header("攻击开关")]
+    public bool attack_open = false;
+
+    private Animator animator;
+    private string animator_parameter_cmd = "cmd";
 
     private void Start()
     {
         SetComponent();
         InitConfig();
+        CheckAttackDistance();
+    }
+
+    private void Update()
+    {
+        CheckAttackDistance();
     }
 
     private void SetComponent()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void InitConfig()
@@ -51,20 +51,50 @@ public class Role_AISystem : MonoBehaviour
     /// 动态攻击距离
     /// </summary>
     /// <returns></returns>
-    public int CheckAttackDistance()
+    public bool CheckAttackDistance()
     {
-        return 4;
+        current_attack_distance = Vector3.Distance(transform.position, attack_target.position);
+        attack_open = current_attack_distance < attack_trigger_distance;
+        return attack_open;
     }
 
     public void LookAtTarget()
     {
+        if(!attack_open)
+        {
+            return;
+        }
+
+        PlayIdle();
+        //Debug.LogErrorFormat("{0}面朝向目标 LookAtTarget OK!attack_open={1}", Time.time, attack_open);
         transform.LookAt(attack_target, Vector3.up);
-        PlayAttack();
-        //Debug.LogError("面朝向目标 LookAtTarget OK!");
+      
     }
 
     #region Animator
-    private void PlayAttack()
+    public void PlayIdle()
+    {
+        if (animator == null)
+        {
+            SetComponent();
+            return;
+        }
+
+        animator.SetInteger(animator_parameter_cmd, EnumPlayerState.idle);
+    }
+
+    public void PlayWalk()
+    {
+        if (animator == null)
+        {
+            SetComponent();
+            return;
+        }
+
+        animator.SetInteger(animator_parameter_cmd, EnumPlayerState.walk);
+    }
+
+    public void PlayAttack()
     {
         if(animator == null)
         {
@@ -74,7 +104,7 @@ public class Role_AISystem : MonoBehaviour
 
         if(GetAttackState() == false)
         {
-            animator.SetTrigger("trigger_attack_1");
+            animator.SetInteger(animator_parameter_cmd, EnumPlayerState.attack);
         }
     }
 

@@ -2,56 +2,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerController : MonoBehaviour
 {
     public Camera mainCamera;
-    RaycastHit hit;
+    public Role_AISystem role_ai_system;
+    private RaycastHit hit;
     public NavMeshAgent navMeshAgent;
-    public int state = 0;
-    public AnimationClip idleAnimationClip;
-    public AnimationClip walkAnimationClip;
-    public AnimationClip runAnimationClip;
-    public AnimationClip jumpAnimationClip;
-    public Animator playerAnimator;
+    //public int state = 0;
+    //public AnimationClip idleAnimationClip;
+    //public AnimationClip walkAnimationClip;
+    //public AnimationClip runAnimationClip;
+    //public AnimationClip jumpAnimationClip;
+    //public Animator playerAnimator;
     private Vector3 destination;
     private bool isWalk = false;
-    // Start is called before the first frame update
+    //
     void Start()
     {
-        playerAnimator.SetInteger("state", 0);
+        SetComponent();
+        PlayIdle();
+    }
+
+    private void SetComponent()
+    {
+        role_ai_system = GetComponent<Role_AISystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (GameGlobleStatic.isOpenPanel == false)
         {
-            state = 1;
-            //navMeshAgent.SetDestination(GetHitPosition());
-            //Debug.Log(gameObject.transform.position);
-
-            destination = GetHitPosition();
-            navMeshAgent.destination = destination;
-            isWalk = true;
-            playerAnimator.SetInteger("state", 1);
-
-        }
-        if (navMeshAgent.remainingDistance<0.1f&&isWalk==true)
-        {
-            isWalk = false;
-            Debug.Log("NavMeshAgent Stop!");           
-            state = 0;
-            playerAnimator.SetInteger("state", 0);
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            var vmt = GetEnemyInfo();
-            if(vmt != null)
+            if (Input.GetMouseButton(0))
             {
-                Debug.Log("Need open the MonsterAttributePanel!");
-                MonsterAttributePanel.Instance().Open();
-                MonsterAttributePanel.Instance().InitData(vmt);
+                //navMeshAgent.SetDestination(GetHitPosition());
+                //Debug.Log(gameObject.transform.position);
+
+                destination = GetHitPosition();
+                navMeshAgent.destination = destination;
+                isWalk = true;
+                PlayWalk();
+            }
+
+            if (navMeshAgent.remainingDistance < 0.1f && isWalk == true)
+            {
+                isWalk = false;
+                Debug.Log("NavMeshAgent Stop!");
+                PlayIdle();
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                var vmt = GetEnemyInfo();
+                if (vmt != null)
+                {
+                    Debug.Log("Need open the MonsterAttributePanel!");
+                    MonsterAttributePanel.Instance().Open();
+                    MonsterAttributePanel.Instance().InitData(vmt);
+                }
             }
         }
 
@@ -89,18 +99,38 @@ public class PlayerController : MonoBehaviour
 
         if (hit.collider.gameObject.layer == 12)
         {
-            Debug.Log("Hit the ground");
+            //Debug.Log("Hit the ground");
             return hit.point;
         }
 
         return gameObject.transform.position;
 
     }
-    public enum PlayerState
+
+    #region Animator
+    private void PlayIdle()
     {
-        IDLE=0,
-        WALK=1,
-        RUN=2,
-        JUMP=3
+        if (role_ai_system == null)
+        {
+            SetComponent();
+            return;
+        }
+
+        role_ai_system.PlayIdle();
     }
+
+    private void PlayWalk()
+    {
+        if (role_ai_system == null)
+        {
+            SetComponent();
+            return;
+        }
+
+        role_ai_system.PlayWalk();
+    }
+    #endregion
 }
+
+//20230215
+//Assets/ModularRPGHeroesHP/Prefabs/BasicCharacters/SwordShieldKnight.prefab
