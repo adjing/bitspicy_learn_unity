@@ -1,7 +1,11 @@
 ﻿/*
 角色AI系统，英雄和角色共用。英雄自动打，怪物行为
 */
+using System;
+using System.Data;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Role_AISystem : MonoBehaviour
 {
@@ -9,6 +13,12 @@ public class Role_AISystem : MonoBehaviour
     /// int 1=英雄 2=怪物
     /// </summary>
     public string role_type;
+
+    [Header("编号GUID")]
+    public string role_guid="1001";
+
+    [Header("数据")]
+    public GameRole_Data current_role_data;
 
     [Header("攻击触发配置,离敌人的距离")]
     public int attack_trigger_distance = 5;
@@ -27,9 +37,34 @@ public class Role_AISystem : MonoBehaviour
 
     private void Start()
     {
+        FillData();
         SetComponent();
         InitConfig();
         CheckAttackDistance();
+    }
+
+    private void FillData()
+    {
+        current_role_data = new GameRole_Data();
+        var dbrow = GetDBData();
+        if(dbrow != null )
+        {
+            current_role_data.hp = dbrow.health;
+        }
+        else
+        {
+            Debug.LogErrorFormat("{0} role_guid={1}", Time.time, role_guid);
+        }
+    }
+
+    /// <summary>
+    /// 数据库配表数据
+    /// </summary>
+    /// <returns></returns>
+    private EnemyData GetDBData()
+    {
+        EnemyData nd = MogoDbManager.Instance().GetEnemyData(int.Parse(role_guid));
+        return nd;
     }
 
     private void Update()
@@ -53,6 +88,11 @@ public class Role_AISystem : MonoBehaviour
     /// <returns></returns>
     public bool CheckAttackDistance()
     {
+        if (attack_target == null)
+        {
+            return false;
+        }
+
         current_attack_distance = Vector3.Distance(transform.position, attack_target.position);
         attack_open = current_attack_distance < attack_trigger_distance;
         return attack_open;
@@ -118,6 +158,66 @@ public class Role_AISystem : MonoBehaviour
         }
 
         return b;
+    }
+
+    #endregion
+
+    #region Damage
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="active_attacker">主动攻击者</param>
+    /// <param name="damage_go">挨打的</param>
+    public void On_DamageClick(string active_attacker_role_guid, Role_AISystem damage_go)
+    {
+        var isown = GetIsOwn(active_attacker_role_guid,damage_go.role_guid);
+        if (isown)
+        {
+            //Debug.LogErrorFormat("打到自己了damage_go={0}", damage_go.role_guid);
+            return;
+        }
+
+        var add_hp = -2000;
+        var hp = current_role_data.AddHP(add_hp);
+        UpdateUIHP(hp);
+        if (hp <= 0)
+        {
+            //die
+            PlayAnimation_Die();
+        }
+        else
+        {
+            //living
+            PlayAnimation_Hit(hp);
+        }
+    }
+
+    private bool GetIsOwn(string active_attacker_role_guid,string hit_role_guid)
+    {
+        if(active_attacker_role_guid == hit_role_guid)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void UpdateUIHP(int hp)
+    {
+        
+    }
+
+    private void PlayAnimation_Die()
+    {
+        Destroy(gameObject);
+    }
+
+    private void PlayAnimation_Hit(int hp)
+    {
+        Debug.LogErrorFormat("名称={0} 血量={1}", role_guid, hp);
     }
 
     #endregion

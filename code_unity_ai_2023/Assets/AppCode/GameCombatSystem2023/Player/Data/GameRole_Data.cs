@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -104,5 +105,16 @@ public class GameRole_Data
     public void Set_AttackTargetTransform(Transform p)
     {
         attack_target_transform = p;
+    }
+
+    public int AddHP(int p)
+    {
+        hp += p;
+        return hp;
+    }
+
+    public int GetHP()
+    {
+        return hp;
     }
 }

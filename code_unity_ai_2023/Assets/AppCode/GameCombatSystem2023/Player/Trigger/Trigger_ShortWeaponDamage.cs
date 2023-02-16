@@ -10,6 +10,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Trigger_ShortWeaponDamage : MonoBehaviour
 {
+    [Header("编号GUID")]
+    public string role_guid = "1001";
+
     [Header("是否打印日志")]
     public bool ShowLog = true;
     void Start()
@@ -27,5 +30,18 @@ public class Trigger_ShortWeaponDamage : MonoBehaviour
         {
             Debug.LogErrorFormat("短武器伤害OnTriggerEnter hit={0}", other.name);
         }
+
+        var role = other.GetComponent<Role_AISystem>();
+        if(role != null)
+        {
+            role.On_DamageClick(role_guid,role);
+        }
     }
 }
+
+/*
+1 碰撞检测
+2 调角色扣血方法
+3 遭受攻击时特效，音效
+4 
+*/
