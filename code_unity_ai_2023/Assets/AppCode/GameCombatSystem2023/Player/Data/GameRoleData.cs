@@ -1,5 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿/*
+DBGameRoleData = database config,纯数据
+GameRoleData = 游戏进行中的数据结构，数据+ 游戏可视化组件
+*/
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +11,7 @@ using UnityEngine;
 /// 通过这些数据来创建英雄，怪物在场景里
 /// </summary>
 [System.Serializable]
-public class GameRole_Data
+public class GameRoleData
 {
     public string user_guid;
 
@@ -87,7 +90,12 @@ public class GameRole_Data
     /// </summary>
     public Transform attack_target_transform;
 
-    public void Set_Data(string p_user_guid, GameRole_Data p)
+    /// <summary>
+    /// 实例化成功
+    /// </summary>
+    public Action<GameObject> on_spawn_success_click;
+
+    public void Set_Data(string p_user_guid, GameRoleData p)
     {
         //角色数据
         //MogoDbManager.Instance().UpdataPlayerBattleDataDt

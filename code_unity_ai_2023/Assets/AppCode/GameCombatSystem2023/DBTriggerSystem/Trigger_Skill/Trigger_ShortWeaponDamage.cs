@@ -8,17 +8,14 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Trigger_ShortWeaponDamage : MonoBehaviour
+public class Trigger_ShortWeaponDamage : TriggerBaseSystem
 {
-    [Header("编号GUID")]
-    public string role_guid = "1001";
+    //[Header("编号GUID")]
+    //public string role_guid = "1001";
 
     [Header("是否打印日志")]
     public bool ShowLog = true;
-    void Start()
-    {
-        
-    }
+
 
     /// <summary>
     /// 注意 BoxCollider.IsTrigger = 勾选上
@@ -31,7 +28,7 @@ public class Trigger_ShortWeaponDamage : MonoBehaviour
             Debug.LogErrorFormat("短武器伤害OnTriggerEnter hit={0}", other.name);
         }
 
-        var role = other.GetComponent<Role_AISystem>();
+        var role = other.GetComponent<AI_GameRoleSystem>();
         if(role != null)
         {
             role.On_DamageClick(role_guid,role);

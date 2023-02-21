@@ -2,12 +2,9 @@
 角色AI系统，英雄和角色共用。英雄自动打，怪物行为
 */
 using System;
-using System.Data;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
-public class Role_AISystem : MonoBehaviour
+public class AI_GameRoleSystem : MonoBehaviour
 {
     /// <summary>
     /// int 1=英雄 2=怪物
@@ -17,8 +14,13 @@ public class Role_AISystem : MonoBehaviour
     [Header("编号GUID")]
     public string role_guid="1001";
 
+    [Header("武器槽")]
+    public WeaponSlot_System weapon_slot_system=new WeaponSlot_System();
+
+    //WeaponSlot_System
+
     [Header("数据")]
-    public GameRole_Data current_role_data;
+    public GameRoleData current_role_data = new GameRoleData();
 
     [Header("攻击触发配置,离敌人的距离")]
     public int attack_trigger_distance = 5;
@@ -26,7 +28,7 @@ public class Role_AISystem : MonoBehaviour
     [Header("攻击目标")]
     public Transform attack_target;
 
-    [Header("当前的攻击目标")]
+    [Header("当前的攻击距离")]
     public float current_attack_distance = 0.0f;
 
     [Header("攻击开关")]
@@ -35,36 +37,49 @@ public class Role_AISystem : MonoBehaviour
     private Animator animator;
     private string animator_parameter_cmd = "cmd";
 
-    private void Start()
-    {
-        FillData();
-        SetComponent();
-        InitConfig();
-        CheckAttackDistance();
-    }
-
-    private void FillData()
-    {
-        current_role_data = new GameRole_Data();
-        var dbrow = GetDBData();
-        if(dbrow != null )
-        {
-            current_role_data.hp = dbrow.health;
-        }
-        else
-        {
-            Debug.LogErrorFormat("{0} role_guid={1}", Time.time, role_guid);
-        }
-    }
+    //private void Start()
+    //{
+    //    CheckAttackDistance();
+    //}
 
     /// <summary>
-    /// 数据库配表数据
+    /// 开始初始化数据
     /// </summary>
-    /// <returns></returns>
-    private EnemyData GetDBData()
+    public void StartInitData(GameRoleData dbrow)
     {
-        EnemyData nd = MogoDbManager.Instance().GetEnemyData(int.Parse(role_guid));
-        return nd;
+        if(dbrow == null )
+        {
+            Debug.LogErrorFormat("{0} role_guid={1}", Time.time, role_guid);
+            return;
+        }
+
+        //1 data
+        SetData(dbrow);
+        InitConfig();
+
+        //2 game com
+        SetComponent();
+        InitWeaponSlotSystem(dbrow);
+    }
+
+    private void InitWeaponSlotSystem(GameRoleData dbrow)
+    {
+        if(weapon_slot_system !=null)
+        {
+            weapon_slot_system.StartInitData(dbrow);
+        }
+    }
+
+    public void SetAttackTarget(Transform target)
+    {
+        attack_target = target;
+    }
+
+    private void SetData(GameRoleData dbrow)
+    {
+        role_guid = dbrow.role_guid;
+        current_role_data = dbrow;
+
     }
 
     private void Update()
@@ -169,7 +184,7 @@ public class Role_AISystem : MonoBehaviour
     /// </summary>
     /// <param name="active_attacker">主动攻击者</param>
     /// <param name="damage_go">挨打的</param>
-    public void On_DamageClick(string active_attacker_role_guid, Role_AISystem damage_go)
+    public void On_DamageClick(string active_attacker_role_guid, AI_GameRoleSystem damage_go)
     {
         var isown = GetIsOwn(active_attacker_role_guid,damage_go.role_guid);
         if (isown)

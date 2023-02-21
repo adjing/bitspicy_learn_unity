@@ -5,3 +5,6 @@ code_unity_ai_2023/UserSettings
 code_unity_ai_2023/.vsconfig
 *.csproj
 code_unity_ai_2023/Temp
+code_unity_ai_2023/.vs
+code_unity_ai_2023/Packages/packages-lock.json
+code_unity_ai_2023/obj

@@ -15,7 +15,7 @@ public class GameRole_System : MonoBehaviour
     // Adjust the speed for the application.
     public float speed = 1.0f;
     public Text m_ui_role_name;
-    public GameRole_Data data;
+    public GameRoleData data;
 
     public void Set_GameObjectGUID(string guid)
     {
@@ -27,13 +27,13 @@ public class GameRole_System : MonoBehaviour
         return game_object_guid;
     }
 
-    public void Set_Data(GameRole_Data p)
+    public void Set_Data(GameRoleData p)
     {
         data.Set_Data(Get_GameObjectGUID(),p);
         ShowUIRoleName(p);
     }
 
-    private void ShowUIRoleName(GameRole_Data p)
+    private void ShowUIRoleName(GameRoleData p)
     {
         if(m_ui_role_name != null)
         {

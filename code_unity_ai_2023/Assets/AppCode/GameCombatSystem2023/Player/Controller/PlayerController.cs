@@ -1,18 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerController : MonoBehaviour
 {
     public Camera mainCamera;
-    public Role_AISystem role_ai_system;
+    public AI_GameRoleSystem role_ai_system;
 
-    [Header("Ñ¡ÔñÒ»¸ö²ãrole")]
+    [Header("è§’è‰²å±‚")]
     public LayerMask layer_role;
 
     public LayerMask layer_ground;
@@ -33,13 +28,13 @@ public class PlayerController : MonoBehaviour
 
     private void SetLayerMask()
     {
-        layer_ground = LayerMask.GetMask(new string[] {EnumGameObjectLayer.role});
-        layer_ground = LayerMask.GetMask(new string[] {EnumGameObjectLayer.ground});
+        layer_ground = LayerMask.GetMask(new string[] { EnumGameObjectLayer.role });
+        layer_ground = LayerMask.GetMask(new string[] { EnumGameObjectLayer.ground });
     }
 
     private void SetComponent()
     {
-        role_ai_system = GetComponent<Role_AISystem>();
+        role_ai_system = GetComponent<AI_GameRoleSystem>();
     }
 
     void Update()
@@ -63,16 +58,8 @@ public class PlayerController : MonoBehaviour
             PlayIdle();
         }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            var vmt = GetEnemyInfo();
-            if (vmt != null)
-            {
-                //Debug.Log("Need open the MonsterAttributePanel!");
-                MonsterAttributePanel.Instance().Open();
-                MonsterAttributePanel.Instance().InitData(vmt);
-            }
-        }
+       
+
     }
     public bool CanReachPosition(Vector2 position)
     {
@@ -81,25 +68,39 @@ public class PlayerController : MonoBehaviour
         return path.status == NavMeshPathStatus.PathComplete;
     }
 
-    public EnemyData GetEnemyInfo()
+    public DBGameRoleData GetEnemyInfo()
     {
+        return null;
         //int layerMask = 1 << 11;
 
         //RaycastHit hit;
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, layer_role))
-        {
-            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * this.hit.distance, Color.yellow);
-            //Debug.LogErrorFormat("id={0} hit1={1}", layer_role, hit.collider.gameObject.layer);
-            var role = hit.collider.gameObject.GetComponent<Role_AISystem>();
-            EnemyData nd = MogoDbManager.Instance().GetEnemyData(int.Parse(role.role_guid));
-            return nd;
-        }
-        else
-        {
-            //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            //Debug.Log("Did not Hit");
-            return null;
-        }
+        //if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, layer_role))
+        //{
+        //    //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * this.hit.distance, Color.yellow);
+        //    Debug.LogErrorFormat("id={0} hit1={1}", layer_role, hit.collider.gameObject.layer);
+        //    var role = hit.collider.gameObject.GetComponent<AI_GameRoleSystem>();
+        //    if (role != null)
+        //    {
+        //        DBGameRoleData nd = MogoDbManager.Instance().GetEnemyData(int.Parse(role.role_guid));
+        //        if (nd == null)
+        //        {
+        //            Debug.LogErrorFormat("role_guid={0} ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DB!", role.role_guid);
+        //        }
+        //        return nd;
+        //    }
+        //    else
+        //    {
+        //        Debug.LogErrorFormat("id={0} hit name={1}", layer_role, hit.collider.name);
+        //        return null;
+        //    }
+           
+        //}
+        //else
+        //{
+        //    //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+        //    //Debug.Log("Did not Hit");
+        //    return null;
+        //}
     }
 
     public Vector3 GetHitPosition()
