@@ -72,8 +72,13 @@ public class SteamAPI_System2023 : MonoBehaviour
         Debug.Log(v);
     }
 
-    private string remote_file_name = "player_data.txt";
     public void SaveDataToDB()
+    {
+ 
+    }
+
+    private string remote_file_name = "player_data.txt";
+    public void SaveDataToDB2()
     {
         Quotas();
         IsCloudEnabled();
