@@ -10,8 +10,6 @@ using UnityEngine;
 
 public class CloudSave_System : MonoBehaviour
 {
-    public static CloudSave_System instance { get; private set; }
-
     const int k_NewPlayerLevel = 1;
     const int k_NewPlayerCoin = 10;
     const string k_PlayerLevelKey = "AB_TEST_PLAYER_LEVEL";
@@ -23,31 +21,11 @@ public class CloudSave_System : MonoBehaviour
         { k_PlayerCoinKey, 0 }
     };
 
-    void Awake()
-    {
-        if (instance != null && instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            instance = this;
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (instance == this)
-        {
-            instance = null;
-        }
-    }
-
-    async void Start()
+    async public void StartInitializeUnityServices(string steam_user_guid)
     {
         try
         {
-            await InitializeUnityServices();
+            await InitializeUnityServices(steam_user_guid);
             await LoadServicesData();
         }
         catch (Exception e)
@@ -56,7 +34,7 @@ public class CloudSave_System : MonoBehaviour
         }
     }
 
-    async Task InitializeUnityServices()
+    async Task InitializeUnityServices(string steam_user_guid)
     {
         await UnityServices.InitializeAsync();
         if (this == null)
@@ -66,10 +44,16 @@ public class CloudSave_System : MonoBehaviour
 
         Debug.Log("Services Initialized.");
 
+        //await AuthenticationService.Instance.LinkWithSteamAsync(steam_user_guid);
+        await AuthenticationService.Instance.SignInWithSteamAsync(steam_user_guid);
         if (!AuthenticationService.Instance.IsSignedIn)
         {
             Debug.Log("Signing in...");
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            //ÄäÃûµÇÂ¼
+            //await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+            await AuthenticationService.Instance.SignInWithSteamAsync(steam_user_guid);
+
             if (this == null)
             {
                 return;

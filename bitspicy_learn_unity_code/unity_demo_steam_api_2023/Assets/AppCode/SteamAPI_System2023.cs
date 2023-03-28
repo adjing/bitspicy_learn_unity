@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using Steamworks;
 using System;
 using System.Text;
@@ -11,10 +12,36 @@ public class SteamAPI_System2023 : MonoBehaviour
     [Header("”¶”√ID")]
     public uint app_id = 2374170;
 
+    [Header("Unity Cloud Save")]
+    public CloudSave_System CloudSave_System;
+
     [Header("log")]
     public Text log_txt;
 
     private int count = 0;
+
+    public static SteamAPI_System2023 instance { get; private set; }
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
     void Start()
     {
         try
@@ -32,10 +59,20 @@ public class SteamAPI_System2023 : MonoBehaviour
     private void ShowYourName()
     {
         var is_logged_on = Steamworks.SteamClient.IsLoggedOn;
-        var log =string.Format("IsLoggedOn:{0} Name:{1}  AppID:{2}",
+        var steam_account_id = Steamworks.SteamClient.SteamId.AccountId;
+        //var session_array = Steamworks.SteamUser.GetAuthSessionTicket().Data;
+        //string session_id = Encoding.ASCII.GetString(session_array);
+
+        //if(CloudSave_System != null)
+        //{
+        //    CloudSave_System.StartInitializeUnityServices(steam_account_id.ToString());
+        //}
+
+        var log =string.Format("IsLoggedOn:{0} Name:{1}  AppID:{2} session_id={3}",
             is_logged_on,
             Steamworks.SteamClient.Name, 
-            Steamworks.SteamClient.AppId);
+            Steamworks.SteamClient.AppId,
+            steam_account_id);
         ShowLog(log);
         Debug.Log(log);
     }
@@ -74,7 +111,24 @@ public class SteamAPI_System2023 : MonoBehaviour
 
     public void SaveDataToDB()
     {
- 
+        var db_coin = SteamUserStats.GetStatInt("api_game_coin1");
+        var log1 = string.Format("db coin={0} time:{1}",
+        db_coin,
+       Time.time
+       );
+
+        Debug.Log(log1);
+
+        count++;
+        SteamUserStats.SetStat("api_game_coin1",count);
+        SteamUserStats.StoreStats();
+
+        var log = string.Format("save click={0} time:{1}",
+          count,
+         Time.time
+         );
+
+        Debug.Log(log);
     }
 
     private string remote_file_name = "player_data.txt";
