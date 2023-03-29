@@ -133,3 +133,6 @@ public class CloudSave_System : MonoBehaviour
 
 //https://docs.unity.com/cloud-save/en/manual
 //https://docs.unity.com/ugs-use-cases/en/manual/DownloadAndInstallation
+
+
+//https://docs.unity.com/authentication/en/manual/platform-signin-steam
