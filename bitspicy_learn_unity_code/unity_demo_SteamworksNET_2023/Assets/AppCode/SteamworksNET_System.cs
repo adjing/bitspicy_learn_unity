@@ -19,11 +19,13 @@ public class SteamworksNET_System : MonoBehaviour
     [Header("log")]
     public Text log_txt;
 
+    [Header("Session Ticket")]
+    public string m_SessionTicket;
+
     protected Callback<GameOverlayActivated_t> m_GameOverlayActivated;
     private CallResult<NumberOfCurrentPlayers_t> m_NumberOfCurrentPlayers;
     Callback<GetAuthSessionTicketResponse_t> m_AuthTicketResponseCallback;
     HAuthTicket m_AuthTicket;
-    string m_SessionTicket;
 
     void SignInWithSteam()
     {

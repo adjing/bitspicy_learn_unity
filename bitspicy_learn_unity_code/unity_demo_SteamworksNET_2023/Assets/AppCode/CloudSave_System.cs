@@ -1,7 +1,10 @@
+/*
+ 创建发行商 Web API 密钥
+ https://partner.steamgames.com/doc/webapi_overview/auth
+
+*/
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.CloudSave;
@@ -25,12 +28,38 @@ public class CloudSave_System : MonoBehaviour
     {
         try
         {
-            await InitializeUnityServices(steam_session_ticket);
-            await LoadServicesData();
+            await SignInWithSteamAsync(steam_session_ticket);
+            //await InitializeUnityServices(steam_session_ticket);
+            //await LoadServicesData();
         }
         catch (Exception e)
         {
             Debug.LogException(e);
+        }
+    }
+
+    public async Task SignInWithSteamAsync(string steam_session_ticket)
+    {
+        await UnityServices.InitializeAsync();
+        if (AuthenticationService.Instance.IsSignedIn)
+        {
+            Debug.Log("玩家已经登录 Already signed in.");
+            return;
+        }
+
+        try
+        {
+            SignInOptions info = new SignInOptions();
+            info.CreateAccount = true;
+
+            await AuthenticationService.Instance.SignInWithSteamAsync(steam_session_ticket,info);
+            var playerId = AuthenticationService.Instance.PlayerId;
+            Debug.Log("玩家 Signed in with Steam. Player ID: " + playerId);
+        }
+        catch (RequestFailedException exception)
+        {
+            Debug.LogError("Sign in failed: " + exception.ErrorCode);
+            Debug.LogError(exception.Message);
         }
     }
 
@@ -59,6 +88,8 @@ public class CloudSave_System : MonoBehaviour
             }
             catch(Exception e)
             {
+                Debug.LogError("关联Steam异常:");
+                AuthenticationService.Instance.ClearSessionToken();
                 Debug.LogException(e);
             }
 
