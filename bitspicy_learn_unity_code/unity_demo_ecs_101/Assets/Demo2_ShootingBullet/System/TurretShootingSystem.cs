@@ -36,10 +36,10 @@ namespace AIGameMonster.Tanks
                     Velocity = localToWorld.ValueRO.Up * 20.0f
                 });
 
-                state.EntityManager.SetComponentData(instance, new URPMaterialPropertyBaseColor
-                {
-                    Value = turret.Color
-                });
+                //state.EntityManager.SetComponentData(instance, new URPMaterialPropertyBaseColor
+                //{
+                //    Value = turret.Color
+                //});
             }
         }
     }
