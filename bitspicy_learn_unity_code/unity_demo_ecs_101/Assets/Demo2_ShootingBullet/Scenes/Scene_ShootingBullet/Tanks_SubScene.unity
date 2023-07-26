@@ -162,7 +162,6 @@ GameObject:
   - component: {fileID: 394015102}
   - component: {fileID: 394015101}
   - component: {fileID: 394015100}
-  - component: {fileID: 394015103}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -236,18 +235,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -78.35, z: 0}
---- !u!114 &394015103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 394015099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d983dcea1ee03242b6c1ce98b5da78d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &899272546
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,7 +328,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 912563724}
-  - component: {fileID: 912563723}
   m_Layer: 0
   m_Name: Config
   m_TagString: Untagged
@@ -349,25 +335,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &912563723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 912563722}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a8c921e572419a4386009929a4cccbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TurretRotation: 1
-  TankMovement: 1
-  TurretShooting: 1
-  CannonBall: 1
-  TankSpawning: 0
-  SafeZone: 0
-  Camera: 0
 --- !u!4 &912563724
 Transform:
   m_ObjectHideFlags: 0
@@ -394,8 +361,6 @@ GameObject:
   - component: {fileID: 1701411634}
   - component: {fileID: 1701411636}
   - component: {fileID: 1701411635}
-  - component: {fileID: 1701411638}
-  - component: {fileID: 1701411637}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -469,31 +434,3 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701411633}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1701411637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1701411633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54b6467bcd530cd4d809fae70ea0ca9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  color: {r: 0.5849056, g: 0.5435208, b: 0.5435208, a: 0}
---- !u!114 &1701411638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1701411633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae88c20c89716aa48a0502eb53c4eb0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CannonBallPrefab: {fileID: 3696174618019954236, guid: 82f52abfff024a540b0ab18ccffb8225,
-    type: 3}
-  CannonBallSpawn: {fileID: 27523315}

@@ -38,25 +38,26 @@ namespace AIGameMonster.Tanks
 
         void Execute(Entity entity, ref CannonBall cannonBall, ref LocalTransform transform)
         {
-            var gravity = new float3(0.0f, -9.82f, 0.0f);
-            var invertY = new float3(1.0f, -1.0f, 1.0f);
+            ECB.DestroyEntity(entity);
+            //var gravity = new float3(0.0f, -9.82f, 0.0f);
+            //var invertY = new float3(1.0f, -1.0f, 1.0f);
 
-            transform.Position += cannonBall.Velocity * DeltaTime;
+            //transform.Position += cannonBall.Velocity * DeltaTime;
 
-            // bounce on the ground
-            if (transform.Position.y < 0.0f)
-            {
-                transform.Position *= invertY;
-                cannonBall.Velocity *= invertY * 0.8f;
-            }
+            //// bounce on the ground
+            //if (transform.Position.y < 0.0f)
+            //{
+            //    transform.Position *= invertY;
+            //    cannonBall.Velocity *= invertY * 0.8f;
+            //}
 
-            cannonBall.Velocity += gravity * DeltaTime;
+            //cannonBall.Velocity += gravity * DeltaTime;
 
-            var speed = math.lengthsq(cannonBall.Velocity);
-            if (speed < 0.1f)
-            {
-                ECB.DestroyEntity(entity);
-            }
+            //var speed = math.lengthsq(cannonBall.Velocity);
+            //if (speed < 0.1f)
+            //{
+            //    ECB.DestroyEntity(entity);
+            //}
         }
     }
 }
